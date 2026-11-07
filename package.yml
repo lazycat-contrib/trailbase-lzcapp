@@ -1,0 +1,18 @@
+package: community.lazycat.app.trailbase
+name: trailbase
+version: 0.35.10
+description: "An open-source backend framework with admin UI, auth, SQLite, file storage and REST APIs."
+min_os_version: "1.5.0"
+homepage: https://github.com/trailbaseio/TrailBase
+author: trailbaseio
+license: OSL-3.0
+permissions:
+  required:
+    - net.internet
+locales:
+  zh:
+    name: TrailBase
+    description: "开源后端框架：管理后台、鉴权、SQLite、文件存储与 REST API 一应俱全。"
+  en:
+    name: TrailBase
+    description: "An open-source backend framework with admin UI, auth, SQLite, file storage and REST APIs."

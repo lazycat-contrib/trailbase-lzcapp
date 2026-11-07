@@ -1,0 +1,22 @@
+params:
+  - id: admin_email
+    type: string
+    name: "管理员邮箱"
+    description: "TrailBase 管理员登录邮箱"
+    default_value: "admin@lazycat.local"
+    optional: false
+  - id: tb_pw
+    type: secret
+    name: "管理员密码"
+    description: "TrailBase 管理员登录密码（已预置随机值，请登录后修改）"
+    default_value: "Kw7mR3tQvXn9pZc2BhYs8d"
+    optional: false
+
+locales:
+  zh:
+    admin_email:
+      name: "管理员邮箱"
+      description: "TrailBase 管理员登录邮箱"
+    tb_pw:
+      name: "管理员密码"
+      description: "TrailBase 管理员登录密码（已预置随机值，请登录后修改）"

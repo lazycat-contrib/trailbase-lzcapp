@@ -1,0 +1,43 @@
+application:
+  subdomain: trailbase
+  multi_instance: false
+  # TrailBase has web UI auth with admin login. We seed a dedicated admin
+  # with a random password via the offline CLI at container start (see the
+  # service command below), so no weak default credential exists. Platform
+  # entry auth stays the first line of defense: no public_path.
+  upstreams:
+    - location: /package-licenses/
+      backend: file:///lzcapp/pkg/content/licenses/
+    - location: /
+      backend: http://trailbase:4000/
+services:
+  trailbase:
+    # upstream: trailbase/trailbase:0.35.10
+    image: docker.1ms.run/trailbase/trailbase:0.35.10
+    # Idempotent bootstrap: seed our own admin (offline SQLite via the trail
+    # CLI) before the server starts, so the server never auto-creates its
+    # admin@localhost fallback account with a log-only random password.
+    command: >-
+      /bin/sh -c "/app/trail --data-dir /app/traildepot user add {{ .U.admin_email }} {{PASSWORD_tb_pw}} || :; /app/trail --data-dir /app/traildepot admin promote {{ .U.admin_email }} || :; exec /app/trail --data-dir /app/traildepot run --address 0.0.0.0:4000"
+    environment:
+      - TZ=Asia/Shanghai
+    binds:
+      # SQLite databases, uploads and config all live in the data dir
+      # (upstream default /app/traildepot).
+      - /lzcapp/var/data:/app/traildepot
+usage: |
+  TrailBase 是一个开箱即用的后端框架：内置管理后台、鉴权、SQLite 数据库、
+  文件存储与自动生成的 REST API，适合快速搭建小型应用后端。
+
+  使用方法：
+  1. 打开应用，使用部署参数中的管理员邮箱登录，密码为部署时生成的
+     随机密码（在部署参数中查看/修改）。登录后请立刻在管理后台修改密码。
+  2. 应用会在首次启动时自动用你设置的管理员邮箱 + 随机密码创建管理员
+     账号（通过官方 trail CLI 离线建号），并禁用其内置的 admin@localhost
+     兜底账号路径。
+  3. 数据（SQLite 库、上传文件、配置）全部保存在 /lzcapp/var/data，
+     卸载应用会一并删除，请定期备份。
+
+  说明：
+  - 本包未做实机验证，功能以官方文档为准：https://trailbase.io/
+  - 许可证 OSL-3.0（OSI 认证开源许可），随包分发，见 /package-licenses/。
